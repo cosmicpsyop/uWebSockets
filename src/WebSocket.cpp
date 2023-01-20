@@ -9,7 +9,7 @@ WebSocket<isServer>::WebSocket(bool perMessageDeflate, bool serverNoContextTakeo
     compressionStatus = perMessageDeflate ? CompressionStatus::ENABLED : CompressionStatus::DISABLED;
 
     // if we are created in a group with sliding deflate window allocate it here
-    if (!serverNoContextTakeover && Group<isServer>::from(this)->extensionOptions & SLIDING_DEFLATE_WINDOW) {
+    if (perMessageDeflate && !serverNoContextTakeover && Group<isServer>::from(this)->extensionOptions & SLIDING_DEFLATE_WINDOW) {
         slidingDeflateWindow = Hub::allocateDefaultCompressor(new z_stream{});
     }
 }

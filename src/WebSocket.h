@@ -77,6 +77,11 @@ public:
     static PreparedMessage *prepareMessageBatch(std::vector<std::string> &messages, std::vector<int> &excludedMessages,
                                                 OpCode opCode, bool compressed, void(*callback)(WebSocket<isServer> *webSocket, void *data, bool cancelled, void *reserved) = nullptr);
 
+    void getCompressionState(bool &enabledOut, bool &slidingWindowOut) {
+        enabledOut = compressionStatus != CompressionStatus::DISABLED;
+        slidingWindowOut = slidingDeflateWindow != nullptr;
+    }
+
     friend struct Hub;
     friend struct Group<isServer>;
     friend struct HttpSocket<isServer>;
