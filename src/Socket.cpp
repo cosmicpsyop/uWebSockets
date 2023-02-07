@@ -25,4 +25,25 @@ Socket::Address Socket::getAddress()
     }
 }
 
+std::string Socket::getAddressBytes()
+{
+    uv_os_sock_t fd = getFd();
+
+    sockaddr_storage addr;
+    socklen_t addrLength = sizeof(addr);
+    if (getpeername(fd, (sockaddr *) &addr, &addrLength) == -1) {
+        return "";
+    }
+
+    if (addr.ss_family == AF_INET) {
+        sockaddr_in *ipv4 = (sockaddr_in *) &addr;
+        return std::string((char*)&ipv4->sin_addr, 4);
+    } else if (addr.ss_family == AF_INET6) {
+        sockaddr_in6 *ipv6 = (sockaddr_in6 *) &addr;
+        return std::string((char*)&ipv6->sin6_addr, 16);
+    } else {
+        return "";
+    }
+}
+
 }

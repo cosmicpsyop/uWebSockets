@@ -440,6 +440,7 @@ public:
     };
 
     Address getAddress();
+    std::string getAddressBytes();
 
     void setNoDelay(int enable) {
         setsockopt(getFd(), IPPROTO_TCP, TCP_NODELAY, &enable, sizeof(int));
