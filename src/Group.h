@@ -61,7 +61,6 @@ protected:
     void removeHttpSocket(HttpSocket<isServer> *httpSocket);
 
     Group(int extensionOptions, unsigned int maxPayload, Hub *hub, uS::NodeData *nodeData);
-    void stopListening();
 
 public:
     void onConnection(std::function<void(WebSocket<isServer> *, HttpRequest)> handler);
@@ -88,6 +87,7 @@ public:
     void terminate();
     void close(int code = 1000, char *message = nullptr, size_t length = 0);
     void startAutoPing(int intervalMs, std::string userMessage = "");
+    void stopListening();
 
     // same as listen(TRANSFERS), backwards compatible API for now
     void addAsync() {
