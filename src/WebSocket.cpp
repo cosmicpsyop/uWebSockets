@@ -213,7 +213,7 @@ uS::Socket *WebSocket<isServer>::onData(uS::Socket *s, char *data, size_t length
  *
  */
 template <bool isServer>
-void WebSocket<isServer>::terminate() {
+void WebSocket<isServer>::terminate(char *message, size_t messageLength) {
 
 #ifdef UWS_THREADSAFE
     std::lock_guard<std::recursive_mutex> lockGuard(*nodeData->asyncMutex);
@@ -222,7 +222,7 @@ void WebSocket<isServer>::terminate() {
     }
 #endif
 
-    WebSocket<isServer>::onEnd(this);
+    WebSocket<isServer>::onEnd(this, message, messageLength);
 }
 
 /*
@@ -289,12 +289,12 @@ void WebSocket<isServer>::close(int code, const char *message, size_t length) {
 }
 
 template <bool isServer>
-void WebSocket<isServer>::onEnd(uS::Socket *s) {
+void WebSocket<isServer>::onEnd(uS::Socket *s, char *message, size_t messageLength) {
     WebSocket<isServer> *webSocket = static_cast<WebSocket<isServer> *>(s);
 
     if (!webSocket->isShuttingDown()) {
         Group<isServer>::from(webSocket)->removeWebSocket(webSocket);
-        Group<isServer>::from(webSocket)->disconnectionHandler(webSocket, 1006, nullptr, 0);
+        Group<isServer>::from(webSocket)->disconnectionHandler(webSocket, 1006, message, messageLength);
     } else {
         webSocket->cancelTimeout();
     }

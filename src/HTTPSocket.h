@@ -131,7 +131,7 @@ protected:
     friend struct HttpResponse;
     friend struct Hub;
     static uS::Socket *onData(uS::Socket *s, char *data, size_t length);
-    static void onEnd(uS::Socket *s);
+    static void onEnd(uS::Socket *s, char *message = nullptr, size_t messageLength = 0);
 };
 
 struct HttpResponse {

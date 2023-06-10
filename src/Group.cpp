@@ -19,7 +19,7 @@ void Group<isServer>::timerCallback(uS::Timer *timer) {
 
     group->forEach([](uWS::WebSocket<isServer> *webSocket) {
         if (webSocket->hasOutstandingPong) {
-            webSocket->terminate();
+            webSocket->terminate((char*) "auto ping timeout", 17);
         } else {
             webSocket->hasOutstandingPong = true;
         }

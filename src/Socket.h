@@ -119,14 +119,14 @@ protected:
     }
 
     // clears user data!
-    template <void onTimeout(Socket *)>
+    template <void onTimeout(Socket *, char *, size_t)>
     void startTimeout(int timeoutMs = 15000) {
         Timer *timer = new Timer(nodeData->loop);
         timer->setData(this);
         timer->start([](Timer *timer) {
             Socket *s = (Socket *) timer->getData();
             s->cancelTimeout();
-            onTimeout(s);
+            onTimeout(s, (char*) "socket timeout", 14);
         }, timeoutMs, 0);
 
         user = timer;

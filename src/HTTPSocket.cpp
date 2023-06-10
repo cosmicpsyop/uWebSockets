@@ -291,8 +291,10 @@ void HttpSocket<isServer>::upgrade(const char *secKey, const char *extensions, s
     }
 }
 
+// FIXME: Do something with the message/messageLength params. May require breaking httpDisconnectionHandler interface.
+
 template <bool isServer>
-void HttpSocket<isServer>::onEnd(uS::Socket *s) {
+void HttpSocket<isServer>::onEnd(uS::Socket *s, char *, size_t) {
     HttpSocket<isServer> *httpSocket = (HttpSocket<isServer> *) s;
 
     if (!httpSocket->isShuttingDown()) {

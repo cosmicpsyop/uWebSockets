@@ -28,12 +28,17 @@ protected:
     WebSocket(bool perMessageDeflate, bool serverNoContextTakeover, uS::Socket *socket);
 
     static uS::Socket *onData(uS::Socket *s, char *data, size_t length);
-    static void onEnd(uS::Socket *s);
+    static void onEnd(uS::Socket *s, char *message = nullptr, size_t messageLength = 0);
     using uS::Socket::closeSocket;
 
     static bool refusePayloadLength(uint64_t length, WebSocketState<isServer> *webSocketState) {
         WebSocket<isServer> *webSocket = static_cast<WebSocket<isServer> *>(webSocketState);
         return length > Group<isServer>::from(webSocket)->maxPayload;
+    }
+
+    static unsigned int getMaxPayloadLength(WebSocketState<isServer> *webSocketState) {
+        WebSocket<isServer> *webSocket = static_cast<WebSocket<isServer> *>(webSocketState);
+        return Group<isServer>::from(webSocket)->maxPayload;
     }
 
     static bool setCompressed(WebSocketState<isServer> *webSocketState) {
@@ -47,9 +52,9 @@ protected:
         }
     }
 
-    static void forceClose(WebSocketState<isServer> *webSocketState) {
+    static void forceClose(WebSocketState<isServer> *webSocketState, char *message = nullptr, size_t messageLength = 0) {
         WebSocket<isServer> *webSocket = static_cast<WebSocket<isServer> *>(webSocketState);
-        webSocket->terminate();
+        webSocket->terminate(message, messageLength);
     }
 
     static bool handleFragment(char *data, size_t length, unsigned int remainingBytes, int opCode, bool fin, WebSocketState<isServer> *webSocketState);
@@ -69,7 +74,7 @@ public:
     void transfer(Group<isServer> *group);
 
     // Thread safe
-    void terminate();
+    void terminate(char *message = nullptr, size_t messageLength = 0);
     void ping(const char *message) {send(message, OpCode::PING);}
     void send(const char *message, OpCode opCode = OpCode::TEXT) {send(message, strlen(message), opCode);}
     void send(const char *message, size_t length, OpCode opCode, void(*callback)(WebSocket<isServer> *webSocket, void *data, bool cancelled, void *reserved) = nullptr, void *callbackData = nullptr, bool compress = false, size_t *compressedSize = nullptr);

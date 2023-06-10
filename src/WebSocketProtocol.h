@@ -121,7 +121,9 @@ protected:
         wState->state.lastFin = isFin(src);
 
         if (Impl::refusePayloadLength(payLength, wState)) {
-            Impl::forceClose(wState);
+            char buf[256];
+            snprintf(buf, sizeof(buf), "Websocket frame size exceeded (%u > %u)", (unsigned int)payLength, Impl::getMaxPayloadLength(wState));
+            Impl::forceClose(wState, buf, strlen(buf));
             return true;
         }
 
