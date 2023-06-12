@@ -248,7 +248,7 @@ template <bool isServer>
 void Group<isServer>::terminate() {
     stopListening();
     forEach([](uWS::WebSocket<isServer> *ws) {
-        ws->terminate();
+        ws->terminate((char*)"group terminate", 15);
     });
     forEachHttpSocket([](HttpSocket<isServer> *httpSocket) {
         httpSocket->terminate();

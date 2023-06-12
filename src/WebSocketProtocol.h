@@ -110,12 +110,12 @@ protected:
     static inline bool consumeMessage(T payLength, char *&src, unsigned int &length, WebSocketState<isServer> *wState) {
         if (getOpCode(src)) {
             if (wState->state.opStack == 1 || (!wState->state.lastFin && getOpCode(src) < 2)) {
-                Impl::forceClose(wState);
+                Impl::forceClose(wState, (char*)"websocket error 1", 17);
                 return true;
             }
             wState->state.opCode[++wState->state.opStack] = (OpCode) getOpCode(src);
         } else if (wState->state.opStack == -1) {
-            Impl::forceClose(wState);
+            Impl::forceClose(wState, (char*)"websocket error 2", 17);
             return true;
         }
         wState->state.lastFin = isFin(src);
@@ -341,7 +341,7 @@ public:
                 // invalid reserved bits / invalid opcodes / invalid control frames / set compressed frame
                 if ((rsv1(src) && !Impl::setCompressed(wState)) || rsv23(src) || (getOpCode(src) > 2 && getOpCode(src) < 8) ||
                     getOpCode(src) > 10 || (getOpCode(src) > 2 && (!isFin(src) || payloadLength(src) > 125))) {
-                    Impl::forceClose(wState);
+                    Impl::forceClose(wState, (char*)"websocket error 3", 17);
                     return;
                 }
 

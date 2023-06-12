@@ -333,13 +333,13 @@ bool WebSocket<isServer>::handleFragment(char *data, size_t length, unsigned int
                     webSocket->compressionStatus = WebSocket<isServer>::CompressionStatus::ENABLED;
                     data = group->hub->inflate(data, length, group->maxPayload);
                     if (!data) {
-                        forceClose(webSocketState);
+                        forceClose(webSocketState, (char*)"zlib error", 10);
                         return true;
                     }
             }
 
             if (opCode == 1 && !WebSocketProtocol<isServer, WebSocket<isServer>>::isValidUtf8((unsigned char *) data, length)) {
-                forceClose(webSocketState);
+                forceClose(webSocketState, (char*)"utf8 error", 10);
                 return true;
             }
 
@@ -357,7 +357,7 @@ bool WebSocket<isServer>::handleFragment(char *data, size_t length, unsigned int
                         webSocket->fragmentBuffer.append("....");
                         data = group->hub->inflate((char *) webSocket->fragmentBuffer.data(), length, group->maxPayload);
                         if (!data) {
-                            forceClose(webSocketState);
+                            forceClose(webSocketState, (char*)"zlib error", 10);
                             return true;
                         }
                 } else {
@@ -365,7 +365,7 @@ bool WebSocket<isServer>::handleFragment(char *data, size_t length, unsigned int
                 }
 
                 if (opCode == 1 && !WebSocketProtocol<isServer, WebSocket<isServer>>::isValidUtf8((unsigned char *) data, length)) {
-                    forceClose(webSocketState);
+                    forceClose(webSocketState, (char*)"utf8 error", 10);
                     return true;
                 }
 

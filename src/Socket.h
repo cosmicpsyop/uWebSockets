@@ -220,7 +220,7 @@ protected:
         Context *netContext = nodeData->netContext;
 
         if (status < 0) {
-            STATE::onEnd((Socket *) p);
+            STATE::onEnd((Socket *) p, (char*)"socket status closed", 20);
             return;
         }
 
@@ -242,7 +242,7 @@ protected:
                         }
                     } else if (sent == SOCKET_ERROR) {
                         if (!netContext->wouldBlock()) {
-                            STATE::onEnd((Socket *) p);
+                            STATE::onEnd((Socket *) p, strerror(errno), strlen(strerror(errno)));
                             return;
                         }
                         break;
@@ -261,7 +261,7 @@ protected:
             if (length > 0) {
                 STATE::onData((Socket *) p, nodeData->recvBuffer, length);
             } else if (length <= 0 || (length == SOCKET_ERROR && !netContext->wouldBlock())) {
-                STATE::onEnd((Socket *) p);
+                STATE::onEnd((Socket *) p, strerror(errno), strlen(strerror(errno)));
             }
         }
 

@@ -47,6 +47,8 @@ protected:
         if (webSocket->compressionStatus == WebSocket<isServer>::CompressionStatus::ENABLED) {
             webSocket->compressionStatus = WebSocket<isServer>::CompressionStatus::COMPRESSED_FRAME;
             return true;
+        } else if (webSocket->compressionStatus == WebSocket<isServer>::CompressionStatus::COMPRESSED_FRAME) {
+            return true;
         } else {
             return false;
         }
