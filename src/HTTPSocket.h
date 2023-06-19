@@ -3,7 +3,7 @@
 
 #include "Socket.h"
 #include <string>
-// #include <experimental/string_view>
+#include <string_view>
 
 namespace uWS {
 
@@ -15,9 +15,12 @@ struct Header {
         return key;
     }
 
-    // slow without string_view!
     std::string toString() {
         return std::string(value, valueLength);
+    }
+
+    std::string_view toStringView() {
+        return std::string_view(value, valueLength);
     }
 };
 
