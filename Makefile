@@ -1,8 +1,8 @@
 W        = -Wall
-OPT      = -O2 -g
+OPT      = -O2 -g -I/usr/local/include
 STD      = -std=c++17
 CXXFLAGS = $(STD) $(OPT) $(W) -fPIC $(XCXXFLAGS)
-INCS     = -Isrc/
+INCS     = -Isrc/ -I/usr/local/include
 
 SRCS = src/Extensions.cpp src/Group.cpp src/Networking.cpp src/Hub.cpp src/Node.cpp src/WebSocket.cpp src/HTTPSocket.cpp src/Socket.cpp src/Epoll.cpp src/Room.cpp
 
