@@ -1,5 +1,5 @@
 W        = -Wall
-OPT      = -O2 -g
+OPT      = -O2 -g -I/usr/local/include
 STD      = -std=c++17
 CXXFLAGS = $(STD) $(OPT) $(W) -fPIC $(XCXXFLAGS)
 INCS     = -Isrc/
